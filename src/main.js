@@ -1,21 +1,22 @@
 'use strict';
 
 /**
+ * Quiz App
  * 
  * 出力
- * @const dispResultQz
- * @const dispTitleQz
- * @const displevelQz
- * @const dispQuestionQz
+ * @const dispResultQz      Quiz出力結果の表示
+ * @const dispTitleQz       Quizタイトルの表示
+ * @const displevelQz       Quiz難易度の表示
+ * @const dispQuestionQz    Quiz問題の表示
  * 
- * @const dispAnswersQz
+ * @const dispAnswersQz     Quiz回答リストの表示
  * 
  * Button
- * @const startBtnQz
- * @const restartBtnQz
+ * @const startBtnQz        Quizの開始ボタン
+ * @const restartBtnQz      Quizの再開ボタン
  * 
- * @const dispStartBtnQz
- * @const dispRestartBtnQz
+ * @const dispStartBtnQz    Quiz開始ボタンの再表示
+ * @const dispRestartBtnQz  Quiz再開ボタンの再非表示
  * */ 
 
 const dispResultQz = document.getElementById('display_result_quiz_message');
@@ -28,7 +29,6 @@ const dispAnswersQz = document.getElementById('display_quiz_answers');
 
 const startBtnQz = document.getElementById('start_quiz_button');
 const restartBtnQz = document.getElementById('restart_quiz_button');
-
 const dispStartBtnQz = startBtnQz.style.display;
 const dispRestartBtnQz = restartBtnQz.style.display;
 
@@ -48,24 +48,33 @@ class Quiz {
             .then(qzData => {
                 this.questions = qzData.results;
                 dispResultQz.innerHTML = '取得完了';
-                this.dispQz(this.questions);
+                this.dispQz();
             }).catch(e => console.log(e));
     }
-    dispQz(questions) {
-        if (this.questions.length === 0) { 
+    dispQz() {
+        if (!this.questions.length) { 
             return
         }
-        let i = this.questionId;
-        let num = i + 1
-        this.onesection = this.questions[i].incorrect_answers;
-        this.trueAnswer = this.questions[i].correct_answer;
+        let id = this.questionId;
+        let num = id + 1
+        let qzSection = this.questions[id].incorrect_answers;
+        let qzTrue = this.questions[id].correct_answer;
+
+        this.onesection = qzSection;
+        this.trueAnswer = qzTrue;
         this.onesection.push(this.trueAnswer);
+        // 答えシャッフルの実行
+        this.shuffle(this.onesection);
 
         // ディスプレイ出力
+        let qzCategory = this.questions[id].category;
+        let qzDifficult = this.questions[id].difficulty;
+        let qzQuestion = this.questions[id].question;
+
         dispNumQz.innerHTML = `問題 : No. ${num}`;
-        dispTitleQz.innerHTML = `出題 : ${this.questions[i].category}`;
-        displevelQz.innerHTML = `難易度 : ${this.questions[i].difficulty}`;
-        dispQuestionQz.innerHTML = this.questions[i].question;
+        dispTitleQz.innerHTML = `出題 : ${qzCategory}`;
+        displevelQz.innerHTML = `難易度 : ${qzDifficult}`;
+        dispQuestionQz.innerHTML = qzQuestion
         
         // this.onesectionの展開
         this.onesection.forEach(quiz => {
@@ -78,32 +87,34 @@ class Quiz {
             trQz.appendChild(tdQz);
             dispAnswersQz.appendChild(trQz);
 
-            this.checkQz(btnQz, this.onesection);
+            this.checkQz(btnQz);
         })
     }
-    checkQz(btnQz, onesection) {
-        if (onesection.length === 0) { 
+    shuffle([...onsection]) {
+        for (let i = onsection.length - 1; i >= 0; i--) { 
+            const j = Math.floor(Math.random() * (i + 1));
+            [onsection[i], onsection[j]] = [onsection[j], onsection[i]];
+        }
+        return this.onesection = onsection;
+    }
+    checkQz(btnQz) {
+        if (!this.onesection.length) { 
             return;
         }
         btnQz.addEventListener('click', () => {
-            console.log(btnQz.innerHTML);
             btnQz.innerHTML === this.trueAnswer ? dispResultQz.innerHTML = `正解! 正解数: ${this.correct += 1}` : dispResultQz.innerHTML = `不正解!! 不正解数: ${this.incorrect += 1}`;
             this.questionId++;
             dispAnswersQz.innerHTML = '';
-            this.questionId === 10 ? this.endQz(this.questions): this.dispQz(this.questions);
+            this.questionId === 10 ? this.endQz(): this.dispQz();
         })
     }
-    endQz(questions) {
-        if (!questions) { 
-            return;
-        } 
+    endQz() {
         dispResultQz.innerHTML = `あなたの正答数は、10問中、正解: ${this.correct} 不正解: ${this.incorrect}`;
         dispNumQz.innerHTML = '';
         dispTitleQz.innerHTML = '';
         displevelQz.innerHTML = '';
         dispQuestionQz.innerHTML = '';
         restartBtnQz.style.display = '';
-        return;
     }
     restart() {     
         // 初期化
@@ -122,7 +133,6 @@ const quiz = new Quiz();
 startBtnQz.addEventListener('click', () => { 
     startBtnQz.style.display = 'none';
     quiz.startQz();
-    quiz.dispQz();
 })
 
 restartBtnQz.addEventListener('click', () => {
