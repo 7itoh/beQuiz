@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TestStage Quiz App</title>
+    <style>
+        div {
+            margin-bottom: 12px;
+        }
+
+        li {
+            list-style: none;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <section>
+            <div>
+                <h1>Test Quiz App</h1>
+            </div>
+        </section>
+    </header>
+    <main>
+        <section>
+            <div>
+                <h2>Quiz</h2>
+            </div>
+            <section>
+                <div id="display_result_quiz_message"></div>
+            </section>
+            <div id="display_quiz_number"></div>
+            <div id="display_quiz_title"></div>
+            <div id="display_quiz_level"></div>
+        </section>
+        <section>
+            <div>
+                <fieldset>
+                    <legend>問題文</legend>
+                    <div id="display_quiz_question"></div>
+                </fieldset>
+            </div>
+        </section>
+        <section>
+            <div>
+                <button id="start_quiz_button">Quizスタート</button>
+            </div>
+            <div>
+                <button id="restart_quiz_button" style="display: none;">もう一度やる</button>
+            </div>
+        </section>
+        <section>
+            <table>
+                <thead>
+                    <th>回答リスト</th>
+                    <tbody id="display_quiz_answers"></tbody>
+                </thead>
+            </table>
+        </section>
+    </main>
+    <script src="main.js"></script>
+</body>
+
+</html>
