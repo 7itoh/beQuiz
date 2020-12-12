@@ -52,9 +52,6 @@ class Quiz {
             }).catch(e => console.log(e));
     }
     dispQz() {
-        if (!this.questions.length) { 
-            return
-        }
         let id = this.questionId;
         let num = id + 1
         let qzSection = this.questions[id].incorrect_answers;
@@ -98,9 +95,6 @@ class Quiz {
         return this.onesection = onsection;
     }
     checkQz(btnQz) {
-        if (!this.onesection.length) { 
-            return;
-        }
         btnQz.addEventListener('click', () => {
             btnQz.innerHTML === this.trueAnswer ? dispResultQz.innerHTML = `正解! 正解数: ${this.correct += 1}` : dispResultQz.innerHTML = `不正解!! 不正解数: ${this.incorrect += 1}`;
             this.questionId++;
